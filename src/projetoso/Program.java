@@ -5,18 +5,20 @@
  */
 package projetoso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  *
  * @author bruno
  */
-public class ProjetoSO {
+public class Program {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        int numberOfCities = 5;
        int[][] distances = new int[][]{
            {0,23,10,4,1},
            {23,0,9,5,4},
@@ -24,22 +26,25 @@ public class ProjetoSO {
            {4,5,8,0,11},
            {1,4,2,11,0},
         };
-        System.out.println(Arrays.deepToString(distances).replace("], ", "]\n"));
-        System.out.println("");
-        for(int i = 0; i<5; i++)
-        { 
-            for(int j = 0; j<5; j++)
-            {
-                System.out.print("|"+distances[i][j]+" ");
-            }
-            System.out.println();
-        }
+        Matrix matrix = new Matrix(distances,5);
+        System.out.println(matrix.toString());
+        
         AlgorithmAJ alg = new AlgorithmAJ();
-        int[] path = alg.createPath(distances);
-        System.out.println("Caminho aleatório");
+        
+        int path[] = new int[numberOfCities];
         for(int i = 0; i < path.length; i++){
-            System.out.println(path[i]);
+            path[i] = -1;
         }
+        
+        //System.out.println(path.toString());
+        
+        alg.createPopulation(matrix);
+        ArrayList<Path> paths = alg.getPaths();
+        /*for(Path pa: paths){
+            System.out.println("Path");
+            System.out.println(pa.toString());
+        }*/
+        System.out.println("Number of paths->" + paths.size());
     }
     
 }

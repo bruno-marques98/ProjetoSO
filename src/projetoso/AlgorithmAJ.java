@@ -5,22 +5,47 @@
  */
 package projetoso;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author bruno
  */
 public class AlgorithmAJ {
-
+    private ArrayList<Path> paths;
     public AlgorithmAJ() {
+        paths = new ArrayList<>();
     }
-    public int[] createPath(int[][] distances){
-        int[] path = new int[distances.length];
-        int firstCity = (int) (Math.random()*distances.length);
-        for(int i = 0; i < distances.length; i++){
-            int idCity = (int) (Math.random()*distances.length);
-            System.out.println(idCity);
-            path[i] = distances[idCity][firstCity];
+
+    public ArrayList<Path> getPaths() {
+        return paths;
+    }
+    
+    public ArrayList createPopulation(Matrix matrix){
+        int numberOfPaths = (int) (Math.random()*100);
+        for(int i = 0 ; i < numberOfPaths; i++){
+            Path path = new Path(matrix);
+            path.createRandomPath(matrix.getDistances());
+            paths.add(path);
         }
-        return path;
+        return paths;
     }
+
+    private boolean isEmpty(int arr[]){
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] == -1){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean containsCity(int idCity, int arr[]){
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] == -1){
+                return true;
+            }
+        }
+        return false; 
+    }
+    
 }
