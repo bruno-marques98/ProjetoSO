@@ -30,6 +30,10 @@ class Matrix {
     public int getNumberOfCities(){
         return this.numberOfCities;
     }
+    public int getDistanceBetween(int idCity, int idNextCity){
+        //System.out.println("Id City -> "+idCity+" ID next city -> " +idNextCity);
+        return distances[idCity-1][idNextCity-1];
+    }
 
     @Override
     public String toString() {
