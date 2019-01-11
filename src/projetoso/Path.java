@@ -10,19 +10,34 @@ package projetoso;
  * @author bruno
  */
 public class Path {
-    private Matrix matrix;
     private int path[];
+    private int numberOfCities;
     public Path(Matrix matrix) {
-        this.matrix = matrix;
         this.path = new int[matrix.getNumberOfCities()+1];
         for(int i=0;i<this.path.length;i++){
             this.path[i] = -1;
         }
+        this.numberOfCities = matrix.getNumberOfCities();
     }
 
+    public Path(Matrix matrix, int[] path) {
+        if(path!= null) this.path = path;
+        else {
+            this.path = new int[matrix.getNumberOfCities()+1];
+            for(int i=0;i<this.path.length;i++){
+                this.path[i] = -1;
+            }
+        }
+        this.numberOfCities = matrix.getNumberOfCities();
+    }
     public int[] getPath() {
         return path;
     }
+
+    public void setPath(int[] path) {
+        this.path = path;
+    }
+    
     public void createRandomPath(int[][] distances){
         int[] aux = this.path;
         int idCity = (int) (Math.random()*distances.length+1);
@@ -36,10 +51,10 @@ public class Path {
             aux[position++] = idCity;
             //System.out.println("Id "+idCity);
         }
-        aux[matrix.getNumberOfCities()] = aux[0];
+        aux[numberOfCities] = aux[0];
         this.path = aux;
     }
-    public int getDistance(){
+    public int getDistance(Matrix matrix){
         if(path!= null){
             int distance = 0;
             for(int i = 0; i < path.length-2; i++){
