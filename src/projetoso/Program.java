@@ -6,6 +6,7 @@
 package projetoso;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Program {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
        /*int n = 5;
        int[][] distances = new int[][]{
            {0,23,10,4,1},
@@ -35,9 +36,13 @@ public class Program {
         alg.execute(matrix, 100);
         */
         Import imp = new Import();
-        imp.importFile();
-        System.out.println(imp.importFile().toString());
-        
+        Matrix matrix = imp.importFile();
+        System.out.println(matrix.toString());
+        /*AlgorithmAJ alg = new AlgorithmAJ(matrix);
+        alg.execute(matrix, 8860 );*/
+        Base base = new Base(10,matrix);
+        base.execute();
+        System.out.println("Count: "+base.getCount());
         
         
         

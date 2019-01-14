@@ -5,8 +5,14 @@
  */
 package projetoso;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -21,7 +27,6 @@ public class AlgorithmAJ {
         if(matrix != null) this.matrix = matrix;
     }
     
-
     public ArrayList<Path> getPaths() {
         return paths;
     }
@@ -54,20 +59,22 @@ public class AlgorithmAJ {
         
         double maxFitness = 0.0;
         for(Path path : auxList){
-            if(fitness(path) > maxFitness){
-                maxFitness = fitness(path);
+            double fit = fitness(path);
+            if(fit > maxFitness){
+                maxFitness = fit;
                 if(!topTwo.isEmpty())
                     topTwo.remove(0);
                 topTwo.add(path);
             }
         }
-        
-        auxList.remove(topTwo.get(0));
-        
+        if(topTwo.get(0) != null){
+            auxList.remove(topTwo.get(0));
+        }
         maxFitness = 0.0;
         for(Path path : auxList){
-            if(fitness(path) > maxFitness){
-                maxFitness = fitness(path);
+            double fit = fitness(path);
+            if(fit > maxFitness){
+                maxFitness = fit;
                 if(topTwo.size() > 1)
                     topTwo.remove(1);
                 topTwo.add(path);
@@ -76,12 +83,25 @@ public class AlgorithmAJ {
         return topTwo;
     }
     
+    public Path getBestPath(){
+        Path path = null;
+        double maxFitness = 0.0;
+        for(Path pa : paths){
+            double fit = fitness(pa);
+            if(fit > maxFitness){
+                path = pa;
+            }
+        }
+        return path;
+    }
+    
     public void removeTwoWorst(ArrayList<Path> paths){
         ArrayList<Path> bottomTwo = new ArrayList<>(); 
         double minFitness = 1.0;
         for(Path path : paths){
-            if(fitness(path) < minFitness){
-                minFitness = fitness(path);
+            double fit = fitness(path);
+            if(fit < minFitness){
+                minFitness = fit;
                 if(!bottomTwo.isEmpty())
                     bottomTwo.remove(0);
                 bottomTwo.add(path);
@@ -92,8 +112,9 @@ public class AlgorithmAJ {
         
         minFitness = 1.0;
         for(Path path : paths){
-            if(fitness(path) < minFitness){
-                minFitness = fitness(path);
+            double fit = fitness(path);
+            if(fit < minFitness){
+                minFitness = fit;
                 if(bottomTwo.size() > 1)
                     bottomTwo.remove(1);
                 bottomTwo.add(path);
@@ -184,6 +205,7 @@ public class AlgorithmAJ {
             }
         }
     }
+    
     public int[] swap(int arr[],int position,int position2){
         int aux = arr[position];
         arr[position] = arr[position2];
@@ -191,41 +213,78 @@ public class AlgorithmAJ {
         return arr;
     }
     
-    public void execute(Matrix matrix,int iterations){
+    public void execute(Matrix matrix,int iterations,int timeSeconds){
+        Timer timer = new Timer();
+        int delay = 10;
+        Instant start = Instant.now();
         createPopulation();
         int numberOfCities = matrix.getNumberOfCities();
-        int position = 0;
-        while(position < iterations){ 
-            ArrayList<Path> topTwo = getTwoBestPaths();
-            Path parent1 = new Path(matrix);
-            Path parent2 = new Path(matrix);
-            //int offSpring1[] = new int[numberOfCities];
-            Path offSpring1 = new Path(matrix);
-            for(int i = 0; i < numberOfCities; i++){
-                parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
+        /*TimerTask task = new TimerTask(){
+            @Override
+            public void run(){
+                //do alg
+                ArrayList<Path> topTwo = getTwoBestPaths();
+                    Path parent1 = new Path(matrix);
+                    Path parent2 = new Path(matrix);
+                    //int offSpring1[] = new int[numberOfCities];
+                    Path offSpring1 = new Path(matrix); 
+                    Path offSpring2 = new Path(matrix);
+                    for(int i = 0; i < numberOfCities; i++){
+                        parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
+                        parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
+                    }
+                    Random rand = new Random();
+                    pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
+                    exchangeMutation(offSpring1,MUTATION_RATE);
+                    exchangeMutation(offSpring2,MUTATION_RATE);
+                    topTwo.set(0, offSpring1);
+                    topTwo.set(1, offSpring2);
+                    parent1.getPath()[numberOfCities] = parent1.getPath()[0];
+                    parent2.getPath()[numberOfCities] = parent2.getPath()[0];
+                    removeTwoWorst(paths);
+                    paths.add(parent1);
+                    paths.add(parent2);
             }
-            Path offSpring2 = new Path(matrix);
-            for(int i = 0; i < numberOfCities; i++){
-                parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
-            }
-            
-            Random rand = new Random();
-            pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-            exchangeMutation(offSpring1,MUTATION_RATE);
-            exchangeMutation(offSpring2,MUTATION_RATE);
-            topTwo.set(0, offSpring1);
-            topTwo.set(1, offSpring2);
-            
-            removeTwoWorst(paths);
-            paths.add(parent1);
-            paths.add(parent2);
-            position++;
-        }
-        System.out.println("Best paths");
-        for(Path bestPath : getTwoBestPaths()){
-            System.out.println(bestPath.toString()+" Fitness-> "+ fitness(bestPath)+"\tDistancia: " + bestPath.getDistance(matrix));
-        }
-       
+        };
+        
+        timer.schedule(task, timeSeconds);*/
+               int position = 0;
+                while(position < iterations ){ 
+                    ArrayList<Path> topTwo = getTwoBestPaths();
+                    Path parent1 = new Path(matrix);
+                    Path parent2 = new Path(matrix);
+                    //int offSpring1[] = new int[numberOfCities];
+                    Path offSpring1 = new Path(matrix); 
+                    Path offSpring2 = new Path(matrix);
+                    for(int i = 0; i < numberOfCities; i++){
+                        parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
+                        parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
+                    }
+                    Random rand = new Random();
+                    pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
+                    exchangeMutation(offSpring1,MUTATION_RATE);
+                    exchangeMutation(offSpring2,MUTATION_RATE);
+                    topTwo.set(0, offSpring1);
+                    topTwo.set(1, offSpring2);
+                    parent1.getPath()[numberOfCities] = parent1.getPath()[0];
+                    parent2.getPath()[numberOfCities] = parent2.getPath()[0];
+                    removeTwoWorst(paths);
+                    paths.add(parent1);
+                    paths.add(parent2);
+                    position++;
+                }
+                
+                System.out.println("Best path found");
+                Path bestPath = getBestPath();
+                System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
+                System.out.println("Fitness-> "+ fitness(bestPath));
+                Duration between = Duration.between(start, Instant.now());
+                
+                //long seconds  = TimeUnit.MILLISECONDS.toSeconds(timeElapsed.toMillis());
+                System.out.println("Time taken " + timeSeconds +" seconds");
+            /*}
+        },delay,timeSeconds);*/
+        
         
     }
     /*

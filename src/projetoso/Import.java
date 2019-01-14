@@ -6,12 +6,7 @@
 package projetoso;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -29,23 +24,29 @@ public class Import {
         filePath = (scanner.next());
         return filePath;
     }
-    public Matrix importFile()  throws FileNotFoundException{
+    public Matrix importFile()  throws IOException{
         String filePath = getFilePath();
+        //String currentLine = null;
         Scanner sc = new Scanner(new File(filePath));
-        sc.useLocale(Locale.ROOT);
         // read number of cities
         int n = sc.nextInt();
         // initialize distance matrix
         int[][] dist = new int[n][n];
         // fill distance matrix
         for(int i=0; i<n; i++){
-            for(int j=0; j<i; j++){
-                dist[i][j] = sc.nextInt();
-                dist[j][i] = dist[i][j];
+            //String[] array = currentLine.split(" ", n);
+            for(int j=0; j<n; j++){
+                if(sc.hasNextInt()){
+                    //System.out.println("Has next int");
+                    dist[i][j] = sc.nextInt();
+                    dist[j][i] = dist[i][j];
+                }
+                
             }
         }
         // create and return TSP data
         return new Matrix(dist,n);
+
     }
     
 }
