@@ -14,12 +14,14 @@ import java.time.Duration;
 public class Base {
     private int numberOfThreads;
     private Matrix matrix;
-    public int count;
+    private int count;
+    private int val;
 
     public Base(int numberOfThreads, Matrix matrix) {
         this.numberOfThreads = numberOfThreads;
         this.matrix = matrix;
         this.count = 0;
+        this.val = 0;
     }
 
     public void execute(){
@@ -30,12 +32,15 @@ public class Base {
                     
                     AlgorithmAJ alg = new AlgorithmAJ(matrix);
                     alg.execute(matrix, 8860,10 );
-                    
+                    val++;
                 }
                 
             }.start();
             count++;
         }
+    }
+    public int getVal(){
+        return val;
     }
     public int getCount(){
         return count;

@@ -43,6 +43,7 @@ public class Program {
         Base base = new Base(10,matrix);
         base.execute();
         System.out.println("Count: "+base.getCount());
+        System.out.println("Val: "+base.getVal());
         
         
         
