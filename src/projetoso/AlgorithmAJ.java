@@ -248,8 +248,9 @@ public class AlgorithmAJ {
         };
         
         timer.schedule(task, timeSeconds);*/
+               long end = System.currentTimeMillis() + timeSeconds*1000;
                int position = 0;
-                while(position < iterations ){ 
+                while(position < iterations || System.currentTimeMillis() < end){ 
                     ArrayList<Path> topTwo = getTwoBestPaths();
                     Path parent1 = new Path(matrix);
                     Path parent2 = new Path(matrix);
@@ -278,10 +279,9 @@ public class AlgorithmAJ {
                 Path bestPath = getBestPath();
                 System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
                 System.out.println("Fitness-> "+ fitness(bestPath));
-                Duration between = Duration.between(start, Instant.now());
-                
-                //long seconds  = TimeUnit.MILLISECONDS.toSeconds(timeElapsed.toMillis());
-                System.out.println("Time taken " + timeSeconds +" seconds");
+                //Duration between = Duration.between(start, Instant.now());
+               
+      
             /*}
         },delay,timeSeconds);*/
         
