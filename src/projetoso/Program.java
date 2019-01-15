@@ -40,10 +40,13 @@ public class Program {
         System.out.println(matrix.toString());
         /*AlgorithmAJ alg = new AlgorithmAJ(matrix);
         alg.execute(matrix, 8860 );*/
-        Base base = new Base(10,matrix);
+        Base base = new Base(5,matrix);
         base.execute();
         System.out.println("Count: "+base.getCount());
         System.out.println("Val: "+base.getVal());
+        
+        System.out.println("Melhor caminho encontrado->"+base.getBest().toString());
+        System.out.println("Fitness: "+base.getFitness());
         
         
         

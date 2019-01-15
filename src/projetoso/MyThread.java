@@ -24,7 +24,7 @@ public class MyThread extends Thread{
         myThread = new Thread(){
                 @Override
                 public void run(){
-                    alg.execute(matrix, 8860,10 );
+                    alg.execute(matrix, 8860,1 );
                 }
                 
             };
@@ -44,4 +44,9 @@ public class MyThread extends Thread{
     public Path getBestPath(){
         return alg.getBestPath();
     }
+    public double getFitness(){
+        double fitness = 1 /(double)alg.getBestPath().getDistance(matrix);
+        return fitness;
+    }
+    
 }
