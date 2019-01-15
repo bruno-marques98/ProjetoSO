@@ -44,7 +44,7 @@ public class AlgorithmAJ {
         double fitness = 1 /(double)path.getDistance(matrix);
         return fitness;
     }
-    
+
     public boolean addPath(Path path){
         if(path != null){
             paths.add(path);
@@ -214,91 +214,43 @@ public class AlgorithmAJ {
     }
     
     public void execute(Matrix matrix,int iterations,int timeSeconds){
-        Timer timer = new Timer();
-        int delay = 10;
-        Instant start = Instant.now();
+
         createPopulation();
         int numberOfCities = matrix.getNumberOfCities();
-        /*TimerTask task = new TimerTask(){
-            @Override
-            public void run(){
-                //do alg
-                ArrayList<Path> topTwo = getTwoBestPaths();
-                    Path parent1 = new Path(matrix);
-                    Path parent2 = new Path(matrix);
-                    //int offSpring1[] = new int[numberOfCities];
-                    Path offSpring1 = new Path(matrix); 
-                    Path offSpring2 = new Path(matrix);
-                    for(int i = 0; i < numberOfCities; i++){
-                        parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
-                        parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
-                    }
-                    Random rand = new Random();
-                    pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-                    exchangeMutation(offSpring1,MUTATION_RATE);
-                    exchangeMutation(offSpring2,MUTATION_RATE);
-                    topTwo.set(0, offSpring1);
-                    topTwo.set(1, offSpring2);
-                    parent1.getPath()[numberOfCities] = parent1.getPath()[0];
-                    parent2.getPath()[numberOfCities] = parent2.getPath()[0];
-                    removeTwoWorst(paths);
-                    paths.add(parent1);
-                    paths.add(parent2);
-            }
-        };
-        
-        timer.schedule(task, timeSeconds);*/
-               long end = System.currentTimeMillis() + timeSeconds*1000;
-               int position = 0;
-                while(position < iterations || System.currentTimeMillis() < end){ 
-                    ArrayList<Path> topTwo = getTwoBestPaths();
-                    Path parent1 = new Path(matrix);
-                    Path parent2 = new Path(matrix);
-                    //int offSpring1[] = new int[numberOfCities];
-                    Path offSpring1 = new Path(matrix); 
-                    Path offSpring2 = new Path(matrix);
-                    for(int i = 0; i < numberOfCities; i++){
-                        parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
-                        parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
-                    }
-                    Random rand = new Random();
-                    pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-                    exchangeMutation(offSpring1,MUTATION_RATE);
-                    exchangeMutation(offSpring2,MUTATION_RATE);
-                    topTwo.set(0, offSpring1);
-                    topTwo.set(1, offSpring2);
-                    parent1.getPath()[numberOfCities] = parent1.getPath()[0];
-                    parent2.getPath()[numberOfCities] = parent2.getPath()[0];
-                    removeTwoWorst(paths);
-                    paths.add(parent1);
-                    paths.add(parent2);
-                    position++;
-                }
-                
-                System.out.println("Best path found");
-                Path bestPath = getBestPath();
-                System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
-                System.out.println("Fitness-> "+ fitness(bestPath));
-                //Duration between = Duration.between(start, Instant.now());
-               
-      
-            /*}
-        },delay,timeSeconds);*/
+
+        long end = System.currentTimeMillis() + timeSeconds*1000;
+        int position = 0;
+         while(position < iterations || System.currentTimeMillis() < end){ 
+             ArrayList<Path> topTwo = getTwoBestPaths();
+             Path parent1 = new Path(matrix);
+             Path parent2 = new Path(matrix);
+             //int offSpring1[] = new int[numberOfCities];
+             Path offSpring1 = new Path(matrix); 
+             Path offSpring2 = new Path(matrix);
+             for(int i = 0; i < numberOfCities; i++){
+                 parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
+                 parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
+             }
+             Random rand = new Random();
+             pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
+             exchangeMutation(offSpring1,MUTATION_RATE);
+             exchangeMutation(offSpring2,MUTATION_RATE);
+             topTwo.set(0, offSpring1);
+             topTwo.set(1, offSpring2);
+             parent1.getPath()[numberOfCities] = parent1.getPath()[0];
+             parent2.getPath()[numberOfCities] = parent2.getPath()[0];
+             removeTwoWorst(paths);
+             paths.add(parent1);
+             paths.add(parent2);
+             position++;
+         }
+
+         System.out.println("Best path found");
+         Path bestPath = getBestPath();
+         System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
+         System.out.println("Fitness-> "+ fitness(bestPath));
+
         
         
     }
-    /*
-    GA()
-   initialize population
-   find fitness of population
-   
-   while (termination criteria is reached) do
-      parent selection
-      crossover with probability pc
-      mutation with probability pm
-      decode and fitness calculation
-      survivor selection
-      find best
-   return best
-    */
 }

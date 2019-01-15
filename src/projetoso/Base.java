@@ -16,26 +16,25 @@ public class Base {
     private Matrix matrix;
     private int count;
     private int val;
+    private double fitness;
+    private AlgorithmAJ alg;
 
     public Base(int numberOfThreads, Matrix matrix) {
         this.numberOfThreads = numberOfThreads;
         this.matrix = matrix;
         this.count = 0;
         this.val = 0;
+        this.alg = new AlgorithmAJ(matrix);
     }
 
     public void execute(){
         for(int i = 0; i < numberOfThreads; i++){
-            new Thread(){
-                @Override
-                public void run(){
-                    
-                    AlgorithmAJ alg = new AlgorithmAJ(matrix);
-                    alg.execute(matrix, 8860,10 );
-                    val++;
-                }
-                
-            }.start();
+            MyThread myT = new MyThread(matrix);
+            myT.startT();
+            double fit = alg.fitness(myT.getBestPath());
+            if(fit <= fitness){
+                fitness = fit;
+            }
             count++;
         }
     }
