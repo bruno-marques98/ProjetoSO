@@ -145,10 +145,11 @@ public class AlgorithmOri {
         paths.remove(bottomThree.get(2));
     }
     
-    public static void pmxCrossover(Path parent1,Path parent2,Path offSpring1,Path offSpring2,int n,Random rand) {
+    public static void pmxCrossover(Path parent1,Path parent2,Path parent3,Path offSpring1,Path offSpring2,Path offSpring3,int n,Random rand) {
         int replacement1[] = new int[n+1];
         int replacement2[] = new int[n+1];
-        int i, n1, m1, n2, m2;
+        int replacement3[] = new int[n+1];
+        int i, n1, m1, n2, m2, n3, m3;
         int swap;
 
         int cuttingPoint1 = rand.nextInt(n);
@@ -166,12 +167,15 @@ public class AlgorithmOri {
         for (i=0; i < n+1; i++) {
             replacement1[i] = -1;
             replacement2[i] = -1;
+            replacement3[i] = -1;
         }
         for (i=cuttingPoint1; i <= cuttingPoint2; i++) {
-            offSpring1.getPath()[i] = parent2.getPath()[i];
+            offSpring1.getPath()[i] = parent3.getPath()[i];
             offSpring2.getPath()[i] = parent1.getPath()[i];
+            offSpring3.getPath()[i] = parent2.getPath()[i];
             replacement1[parent2.getPath()[i]] = parent1.getPath()[i];
-            replacement2[parent1.getPath()[i]] = parent2.getPath()[i];
+            replacement2[parent1.getPath()[i]] = parent3.getPath()[i];
+            replacement3[parent3.getPath()[i]] = parent2.getPath()[i];
         }
 
         // fill in remaining slots with replacements
@@ -181,6 +185,8 @@ public class AlgorithmOri {
                 m1 = replacement1[n1];
                 n2 = parent2.getPath()[i];
                 m2 = replacement2[n2];
+                n3 = parent3.getPath()[i];
+                m3 = replacement3[n3];
             while (m1 != -1) {
                 n1 = m1;
                 m1 = replacement1[m1];
@@ -189,8 +195,13 @@ public class AlgorithmOri {
                 n2 = m2;
                 m2 = replacement2[m2];
             }
+            while (m3 != -1) {
+                n3 = m3;
+                m3 = replacement3[m3];
+            }
                 offSpring1.getPath()[i] = n1;
                 offSpring2.getPath()[i] = n2;
+                offSpring3.getPath()[i] = n3;
             }
         }
     }
@@ -229,24 +240,28 @@ public class AlgorithmOri {
              ArrayList<Path> topThree = getThreeBestPaths();
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
+             Path parent3 = new Path(matrix);
              //int offSpring1[] = new int[numberOfCities];
              Path offSpring1 = new Path(matrix); 
              Path offSpring2 = new Path(matrix);
+             Path offSpring3 = new Path(matrix);
              for(int i = 0; i < numberOfCities; i++){
                  parent1.getPath()[i] = getThreeBestPaths().get(0).getPath()[i];
                  parent2.getPath()[i] = getThreeBestPaths().get(1).getPath()[i];
              }
              Random rand = new Random();
-             pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-             exchangeMutation(offSpring1,MUTATION_RATE);
-             exchangeMutation(offSpring2,MUTATION_RATE);
+             pmxCrossover(parent1,parent2,parent3,offSpring1,offSpring2,offSpring3,numberOfCities,rand);
+             exchangeMutation(offSpring1,offSpring2,MUTATION_RATE);
              topThree.set(0, offSpring1);
              topThree.set(1, offSpring2);
+             topThree.set(2, offSpring3);
              parent1.getPath()[numberOfCities] = parent1.getPath()[0];
              parent2.getPath()[numberOfCities] = parent2.getPath()[0];
+             parent3.getPath()[numberOfCities] = parent3.getPath()[0];
              removeThreeWorst(paths);
              paths.add(parent1);
              paths.add(parent2);
+             paths.add(parent3);
              position++;
          }
 
