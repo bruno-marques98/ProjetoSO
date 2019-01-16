@@ -249,8 +249,7 @@ public class AlgorithmAJ {
          Path bestPath = getBestPath();
          System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
          System.out.println("Fitness-> "+ fitness(bestPath));
-
-        
-        
+   
     }
+    
 }
