@@ -45,8 +45,8 @@ public class Program {
         System.out.println("Count: "+base.getCount());
         System.out.println("Val: "+base.getVal());
         
-        System.out.println("Melhor caminho encontrado->"+base.getBest().toString());
-        System.out.println("Fitness: "+base.getBest().fitness());
+        System.out.println("Melhor caminho encontrado->"+base.best().toString());
+        System.out.println("Fitness: "+base.best().fitness());
         
         
         

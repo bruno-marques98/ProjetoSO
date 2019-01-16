@@ -42,8 +42,9 @@ public class Base {
             myT.startT();
             if(best == null){
                  best = myT.getBestPath();
+                 this.threads.add(myT); 
             }
-            if(myT.getBestPath() != null && myT.getBestPath().fitness() >  best.fitness() ){
+            if(myT.getBestPath().fitness() >  best.fitness() ){
                 try {
                     //Get lock
                     sem.acquire();
@@ -77,6 +78,9 @@ public class Base {
                 best = t.getBestPath();
             }
         }
+        return best;
+    }
+    public Path best(){
         return best;
     }
 
