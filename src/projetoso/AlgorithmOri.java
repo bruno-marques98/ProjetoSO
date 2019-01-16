@@ -173,9 +173,9 @@ public class AlgorithmOri {
             offSpring1.getPath()[i] = parent3.getPath()[i];
             offSpring2.getPath()[i] = parent1.getPath()[i];
             offSpring3.getPath()[i] = parent2.getPath()[i];
-            replacement1[parent2.getPath()[i]] = parent1.getPath()[i];
-            replacement2[parent1.getPath()[i]] = parent3.getPath()[i];
-            replacement3[parent3.getPath()[i]] = parent2.getPath()[i];
+            replacement1[parent3.getPath()[i]] = parent1.getPath()[i];
+            replacement2[parent1.getPath()[i]] = parent2.getPath()[i];
+            replacement3[parent2.getPath()[i]] = parent3.getPath()[i];
         }
 
         // fill in remaining slots with replacements
@@ -248,6 +248,7 @@ public class AlgorithmOri {
              for(int i = 0; i < numberOfCities; i++){
                  parent1.getPath()[i] = getThreeBestPaths().get(0).getPath()[i];
                  parent2.getPath()[i] = getThreeBestPaths().get(1).getPath()[i];
+                 parent3.getPath()[i] = getThreeBestPaths().get(2).getPath()[i];
              }
              Random rand = new Random();
              pmxCrossover(parent1,parent2,parent3,offSpring1,offSpring2,offSpring3,numberOfCities,rand);
