@@ -22,7 +22,10 @@ public class AlgorithmAJ {
     private ArrayList<Path> paths;
     private final double MUTATION_RATE = Math.random()*100; 
     private Matrix matrix;
-    public AlgorithmAJ(Matrix matrix) {
+    private int numberOfPaths;
+    
+    public AlgorithmAJ(Matrix matrix, int numberOfPaths) {
+        this.numberOfPaths = numberOfPaths;
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;
     }
@@ -32,7 +35,6 @@ public class AlgorithmAJ {
     }
     
     public void createPopulation(){
-        int numberOfPaths = (int) (Math.random()*100);
         for(int i = 0 ; i < numberOfPaths; i++){
             Path path = new Path(matrix);
             path.createRandomPath(matrix.getDistances());
@@ -220,8 +222,8 @@ public class AlgorithmAJ {
         int numberOfCities = matrix.getNumberOfCities();
 
         long end = System.currentTimeMillis() + timeSeconds*1000;
-        int position = 0;
-         while(position < iterations || System.currentTimeMillis() < end){ 
+        //int position = 0;
+         while(/*position < iterations || */System.currentTimeMillis() < end){ 
              ArrayList<Path> topTwo = getTwoBestPaths();
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
@@ -242,7 +244,7 @@ public class AlgorithmAJ {
              removeTwoWorst(paths);
              paths.add(parent1);
              paths.add(parent2);
-             position++;
+             //position++;
          }
 
          System.out.println("Best path found");

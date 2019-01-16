@@ -9,14 +9,19 @@ package projetoso;
  *
  * @author bruno
  */
-public class MyThread extends Thread{
+public class MyThread {
 
     private Matrix matrix;
     private Thread myThread;
     private AlgorithmAJ alg;
-    public MyThread(Matrix matrix) {
+    private int numberOfPaths;
+    private int time;
+    
+    public MyThread(Matrix matrix, int numberOfPaths, int time) {
+        this.time = time;
+        this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
-        this.alg = new AlgorithmAJ(matrix);
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
     }
     
     public void runT() {
@@ -24,9 +29,8 @@ public class MyThread extends Thread{
         myThread = new Thread(){
                 @Override
                 public void run(){
-                    alg.execute(matrix, 8860,1 );
+                    alg.execute(matrix, 8860, time);
                 }
-                
             };
         myThread.start();
     }
@@ -35,14 +39,17 @@ public class MyThread extends Thread{
         
         this.runT();
         
-        try {
-            myThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
     public Path getBestPath(){
         return alg.getBestPath();
+    }
+    
+    public void joinT() {
+        try {
+            this.myThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     

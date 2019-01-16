@@ -24,14 +24,16 @@ public class Program {
         
         String[] commands = args;
         
-        int numberOfThreads = Integer.parseInt(commands[0]);
-        String filePath = commands[1];
+        String filePath = commands[0];
+        int numberOfThreads = Integer.parseInt(commands[1]);
+        int time = Integer.parseInt(commands[2]);
+        int numberOfPaths = Integer.parseInt(commands[3]);
         
         Import imp = new Import(filePath);  
         Matrix matrix = imp.importFile();
         System.out.println(matrix.toString());
         
-        Base base = new Base(numberOfThreads,matrix);
+        Base base = new Base(numberOfThreads, matrix, numberOfPaths, time);
         base.execute();
         System.out.println("Count: "+base.getCount());
         System.out.println("Val: "+base.getVal());

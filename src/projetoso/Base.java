@@ -15,8 +15,10 @@ import java.util.concurrent.Semaphore;
  */
 public class Base {
     private int numberOfThreads;
+    private int numberOfPaths;
     private Matrix matrix;
     private int count;
+    private int time;
     private int val;
     private double fitness;
     private AlgorithmAJ alg;
@@ -24,11 +26,13 @@ public class Base {
     private ArrayList<MyThread> threads;
     private Semaphore sem;
 
-    public Base(int numberOfThreads, Matrix matrix) {
+    public Base(int numberOfThreads, Matrix matrix, int numberOfPaths, int time) {
+        this.time = time;
         this.numberOfThreads = numberOfThreads;
+        this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.fitness = 1;
-        this.alg = new AlgorithmAJ(matrix);
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
         this.threads = new ArrayList<>();
         this.best = null;
         this.sem = sem;
@@ -38,7 +42,7 @@ public class Base {
         //Allow only one thread to write
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix);
+            MyThread myT = new MyThread(matrix, numberOfPaths, time);
             myT.startT();
             if(best == null){
                  best = myT.getBestPath();
@@ -60,6 +64,13 @@ public class Base {
             sem.release();
            
             count++;
+
+        }
+        joinThreads();
+    }
+    public void joinThreads(){
+        for (MyThread t : threads) {
+            t.joinT();
         }
     }
     public int getVal(){
