@@ -46,7 +46,7 @@ public class Program {
         System.out.println("Val: "+base.getVal());
         
         System.out.println("Melhor caminho encontrado->"+base.getBest().toString());
-        System.out.println("Fitness: "+base.getFitness());
+        System.out.println("Fitness: "+base.getBest().fitness());
         
         
         

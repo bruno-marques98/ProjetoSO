@@ -12,7 +12,9 @@ package projetoso;
 public class Path {
     private int path[];
     private int numberOfCities;
+    private Matrix matrix;
     public Path(Matrix matrix) {
+        this.matrix = matrix;
         this.path = new int[matrix.getNumberOfCities()+1];
         for(int i=0;i<this.path.length;i++){
             this.path[i] = -1;
@@ -89,6 +91,13 @@ public class Path {
             pathString += path[i] + " ";
         }
         return pathString;
+    }
+
+    
+    public double fitness(){
+        if(getDistance(matrix) == 0 || this == null) return 0.0;
+        double fitness = 1 /(double)getDistance(matrix);
+        return fitness;
     }
     
 }

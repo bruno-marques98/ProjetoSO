@@ -44,9 +44,6 @@ public class MyThread extends Thread{
     public Path getBestPath(){
         return alg.getBestPath();
     }
-    public double getFitness(){
-        double fitness = 1 /(double)alg.getBestPath().getDistance(matrix);
-        return fitness;
-    }
+
     
 }
