@@ -44,29 +44,30 @@ public class Base {
         for(int i = 0; i < numberOfThreads; i++){
             MyThread myT = new MyThread(matrix, numberOfPaths, time);
             myT.startT();
-            if(best == null){
-                 best = myT.getBestPath();
-                 this.threads.add(myT); 
-            }
-            if(myT.getBestPath().fitness() >  best.fitness() ){
-                try {
-                    //Get lock
-                    sem.acquire();
-                    
-                    best = myT.getBestPath();
-                    this.threads.add(myT);                    
-                } catch (InterruptedException exc) {
-                     System.out.println(exc); 
+            
+                if(best == null){
+                     best = myT.getBestPath();
+                     this.threads.add(myT); 
+                }
+            
+        }
+           
+            count++;
+            joinThreads();
+            for(MyThread myT: threads){
+                if( myT.getBestPath() != null && myT.getBestPath().fitness() >  best.fitness() ){
+                    try {
+                        //Get lock
+                        sem.acquire();
+
+                        best = myT.getBestPath();
+                        this.threads.add(myT);                    
+                    } catch (InterruptedException exc) {
+                         System.out.println(exc); 
+                    }
                 }
             }
             
-            //Release lock
-            sem.release();
-           
-            count++;
-
-        }
-        joinThreads();
     }
     public void joinThreads(){
         for (MyThread t : threads) {
