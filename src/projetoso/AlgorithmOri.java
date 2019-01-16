@@ -5,24 +5,19 @@
  */
 package projetoso;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author bruno
  */
-public class AlgorithmAJ {
+public class AlgorithmOri {
     private ArrayList<Path> paths;
     private final double MUTATION_RATE = Math.random()*100; 
     private Matrix matrix;
-    public AlgorithmAJ(Matrix matrix) {
+    
+    public AlgorithmOri(Matrix matrix) {
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;
     }
@@ -53,34 +48,47 @@ public class AlgorithmAJ {
         return false;
     }
     
-    public ArrayList<Path> getTwoBestPaths(){
+    public ArrayList<Path> getThreeBestPaths(){
         ArrayList<Path> auxList = new ArrayList<>(paths);
-        ArrayList<Path> topTwo = new ArrayList<>();
+        ArrayList<Path> topThree = new ArrayList<>();
         
         double maxFitness = 0.0;
         for(Path path : auxList){
             double fit = fitness(path);
             if(fit > maxFitness){
                 maxFitness = fit;
-                if(!topTwo.isEmpty())
-                    topTwo.remove(0);
-                topTwo.add(path);
+                if(!topThree.isEmpty())
+                    topThree.remove(0);
+                topThree.add(path);
             }
         }
-        if(topTwo.get(0) != null){
-            auxList.remove(topTwo.get(0));
+        if(topThree.get(0) != null){
+            auxList.remove(topThree.get(0));
         }
         maxFitness = 0.0;
         for(Path path : auxList){
             double fit = fitness(path);
             if(fit > maxFitness){
                 maxFitness = fit;
-                if(topTwo.size() > 1)
-                    topTwo.remove(1);
-                topTwo.add(path);
+                if(topThree.size() > 1)
+                    topThree.remove(1);
+                topThree.add(path);
             }
         }
-        return topTwo;
+        if(topThree.get(0) != null){
+            auxList.remove(topThree.get(0));
+        }
+        maxFitness = 0.0;
+        for(Path path : auxList){
+            double fit = fitness(path);
+            if(fit > maxFitness){
+                maxFitness = fit;
+                if(topThree.size() > 2)
+                    topThree.remove(1);
+                topThree.add(path);
+            }
+        }
+        return topThree;
     }
     
     public Path getBestPath(){
@@ -95,32 +103,46 @@ public class AlgorithmAJ {
         return path;
     }
     
-    public void removeTwoWorst(ArrayList<Path> paths){
-        ArrayList<Path> bottomTwo = new ArrayList<>(); 
+    public void removeThreeWorst(ArrayList<Path> paths){
+        ArrayList<Path> bottomThree = new ArrayList<>(); 
         double minFitness = 1.0;
         for(Path path : paths){
             double fit = fitness(path);
             if(fit < minFitness){
                 minFitness = fit;
-                if(!bottomTwo.isEmpty())
-                    bottomTwo.remove(0);
-                bottomTwo.add(path);
+                if(!bottomThree.isEmpty())
+                    bottomThree.remove(0);
+                bottomThree.add(path);
             }
         }
         
-        paths.remove(bottomTwo.get(0));
+        paths.remove(bottomThree.get(0));
         
         minFitness = 1.0;
         for(Path path : paths){
             double fit = fitness(path);
             if(fit < minFitness){
                 minFitness = fit;
-                if(bottomTwo.size() > 1)
-                    bottomTwo.remove(1);
-                bottomTwo.add(path);
+                if(bottomThree.size() > 1)
+                    bottomThree.remove(1);
+                bottomThree.add(path);
             }
         }
-        paths.remove(bottomTwo.get(1));
+        
+        paths.remove(bottomThree.get(1));
+                paths.remove(bottomThree.get(1));
+        
+        minFitness = 1.0;
+        for(Path path : paths){
+            double fit = fitness(path);
+            if(fit < minFitness){
+                minFitness = fit;
+                if(bottomThree.size() > 2)
+                    bottomThree.remove(2);
+                bottomThree.add(path);
+            }
+        }
+        paths.remove(bottomThree.get(2));
     }
     
     public static void pmxCrossover(Path parent1,Path parent2,Path offSpring1,Path offSpring2,int n,Random rand) {
@@ -128,19 +150,9 @@ public class AlgorithmAJ {
         int replacement2[] = new int[n+1];
         int i, n1, m1, n2, m2;
         int swap;
-        /*
-        for (i=0; i< n; i++)
-            System.out.printf("%2d ",parent1.getPath()[i]);
-            System.out.println();
-        for (i=0; i< n; i++)
-            System.out.printf("%2d ",parent2.getPath()[i]);
-            System.out.println();
-        */
+
         int cuttingPoint1 = rand.nextInt(n);
         int cuttingPoint2 = rand.nextInt(n);
-
-        //int cuttingPoint1 = 3;
-        //int cuttingPoint2 = 5;
 
         while (cuttingPoint1 == cuttingPoint2) {
             cuttingPoint2 = rand.nextInt(n);
@@ -150,8 +162,6 @@ public class AlgorithmAJ {
             cuttingPoint1 = cuttingPoint2;
             cuttingPoint2 = swap;
         }
-
-        //System.out.printf("cp1 = %d cp2 = %d\n",cuttingPoint1,cuttingPoint2);
 
         for (i=0; i < n+1; i++) {
             replacement1[i] = -1;
@@ -164,12 +174,6 @@ public class AlgorithmAJ {
             replacement2[parent1.getPath()[i]] = parent2.getPath()[i];
         }
 
-        /*for (i=0; i< n+1; i++)
-        System.out.printf("%2d ",replacement1[i]);
-        System.out.println();
-        for (i=0; i< n+1; i++)
-        System.out.printf("%2d ",replacement2[i]);
-        System.out.println();*/
         // fill in remaining slots with replacements
         for (i = 0; i < n; i++) {
             if ((i < cuttingPoint1) || (i > cuttingPoint2)) {
@@ -201,8 +205,8 @@ public class AlgorithmAJ {
                 while(idCity2 == idCity){
                     idCity2 = (int) (Math.random()*size);
                 }
-                parent1.setPath(swap(parent1.getPath(),idCity,idCity2));
                 parent2.setPath(swap(parent2.getPath(),idCity,idCity2));
+                parent1.setPath(swap(parent1.getPath(),idCity,idCity2));
             }
         }
     }
@@ -222,24 +226,25 @@ public class AlgorithmAJ {
         long end = System.currentTimeMillis() + timeSeconds*1000;
         int position = 0;
          while(position < iterations || System.currentTimeMillis() < end){ 
-             ArrayList<Path> topTwo = getTwoBestPaths();
+             ArrayList<Path> topThree = getThreeBestPaths();
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
              //int offSpring1[] = new int[numberOfCities];
              Path offSpring1 = new Path(matrix); 
              Path offSpring2 = new Path(matrix);
              for(int i = 0; i < numberOfCities; i++){
-                 parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
-                 parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
+                 parent1.getPath()[i] = getThreeBestPaths().get(0).getPath()[i];
+                 parent2.getPath()[i] = getThreeBestPaths().get(1).getPath()[i];
              }
              Random rand = new Random();
              pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-             exchangeMutation(offSpring1,offSpring2,MUTATION_RATE);
-             topTwo.set(0, offSpring1);
-             topTwo.set(1, offSpring2);
+             exchangeMutation(offSpring1,MUTATION_RATE);
+             exchangeMutation(offSpring2,MUTATION_RATE);
+             topThree.set(0, offSpring1);
+             topThree.set(1, offSpring2);
              parent1.getPath()[numberOfCities] = parent1.getPath()[0];
              parent2.getPath()[numberOfCities] = parent2.getPath()[0];
-             removeTwoWorst(paths);
+             removeThreeWorst(paths);
              paths.add(parent1);
              paths.add(parent2);
              position++;
