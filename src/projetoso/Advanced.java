@@ -6,6 +6,8 @@
 package projetoso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -92,4 +94,19 @@ public class Advanced {
         }
         return population;
     }
+    
+    public void orderPopulation(){
+        ArrayList<Path> ordered = globalPopulation();
+        double fitness = 0.0;
+        Collections.sort(ordered,comparator);
+        
+    }
+    public static Comparator<Path> comparator = new Comparator<Path>(){
+        @Override
+        public int compare(Path path1,Path path2){
+            double fitness = path1.fitness();
+            double fitness2 = path2.fitness();
+            return (int) (fitness2-fitness);
+        }
+    };
 }
