@@ -17,7 +17,6 @@ public class Base {
     private Matrix matrix;
     private int count;
     private int val;
-    private double fitness;
     private AlgorithmAJ alg;
     private Path best;
     private ArrayList<MyThread> threads;
@@ -27,7 +26,6 @@ public class Base {
         this.matrix = matrix;
         this.count = 0;
         this.val = 0;
-        this.fitness = 1;
         this.alg = new AlgorithmAJ(matrix);
         this.threads = new ArrayList<>();
     }
@@ -48,20 +46,22 @@ public class Base {
         return count;
     }
 
-    public double getFitness() {
-        return fitness;
-    }
     
     public Path getBest() {
+        double fitness = 0;
         for(MyThread t : threads){
             double fit = t.getFitness();
             System.out.println("Fitness -> " + fit);
-            if(fit < fitness ){
+            if(fit > fitness ){
                 fitness = fit;
                 best = t.getBestPath();
             }
         }
         return best;
+    }
+    public double getFitness(){
+        double fitness = 1 /(double)best.getDistance(matrix);
+        return fitness;
     }
 
 }
