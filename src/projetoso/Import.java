@@ -14,18 +14,21 @@ import java.util.Scanner;
  * @author bruno
  */
 public class Import {
+    
+    private String filePath;
 
-    public Import() {
+    public Import(String filePath) {
+        this.filePath = filePath;
     }
-    public String getFilePath(){
+    /*public String getFilePath(){
         Scanner scanner = new Scanner(System.in);
         String filePath;
         System.out.println("Enter filename:");
         filePath = (scanner.next());
         return filePath;
-    }
+    }*/
     public Matrix importFile()  throws IOException{
-        String filePath = getFilePath();
+        //String filePath = file;
         //String currentLine = null;
         Scanner sc = new Scanner(new File(filePath));
         // read number of cities
