@@ -5,6 +5,8 @@
  */
 package projetoso;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author bruno
@@ -14,6 +16,7 @@ public class MyThread {
     private Matrix matrix;
     private Thread myThread;
     private AlgorithmAJ alg;
+    private ArrayList<Path> population;
     private int numberOfPaths;
     private int time;
     
@@ -22,7 +25,9 @@ public class MyThread {
         this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.alg = new AlgorithmAJ(matrix, numberOfPaths);
+        this.population = new ArrayList<>();
     }
+       
     
     public void runT() {
         System.out.println("Did run");
@@ -51,6 +56,11 @@ public class MyThread {
             e.printStackTrace();
         }
     }
-
+    public ArrayList<Path> getPopulation(){
+        for(Path path : alg.getPaths()){
+            population.add(path);
+        }
+        return population;
+    }
     
 }
