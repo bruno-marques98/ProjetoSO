@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,75 +18,60 @@ import java.util.concurrent.Semaphore;
  */
 public class Advanced {
     private int numberOfThreads;
+    private int numberOfPaths;
     private Matrix matrix;
-    private int count;
-    private int val;
+    private int time;
     private double fitness;
     private AlgorithmAJ alg;
-    private Path best;
+    public static Path best= null;
     private ArrayList<MyThread> threads;
-    private Semaphore sem;
+    private static Semaphore sem = new Semaphore(1);;
 
     public Advanced(int numberOfThreads, Matrix matrix) {
-     /*   this.numberOfThreads = numberOfThreads;
+        this.time = time;
+        this.numberOfThreads = numberOfThreads;
+        this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.fitness = 1;
-        this.alg = new AlgorithmAJ(matrix);
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
         this.threads = new ArrayList<>();
-        this.best = null;
-        this.sem = sem;
     }
+     
 
     public void execute(){
         //Allow only one thread to write
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix);
-            myT.startT();
-            if(best == null){
-                 best = myT.getBestPath();
-                 this.threads.add(myT); 
-            }
-            if(myT.getBestPath().fitness() >  best.fitness() ){
-                try {
-                    //Get lock
-                    sem.acquire();
-                    
-                    best = myT.getBestPath();
-                    this.threads.add(myT);                    
-                } catch (InterruptedException exc) {
-                     System.out.println(exc); 
-                }
-            }
-            
-            //Release lock
-            sem.release();
-           
-            count++;
+            MyThread myT = new MyThread(matrix, numberOfPaths, time);
+            myT.start();
+            threads.add(myT);
         }
-    }
-    public int getVal(){
-        return val;
-    }
-    public int getCount(){
-        return count;
+        joinThreads();
     }
 
-    public Path getBest() {
-        for(MyThread t : threads){
-            double fit = t.getBestPath().fitness();
-            System.out.println("Fitness -> " + fit);
-            if(fit < fitness ){
-                fitness = fit;
-                best = t.getBestPath();
+    public static void setBest(Path best) {
+        try {
+            sem.acquire();
+            if(Base.best == null || best.fitness() > Base.best.fitness()){
+                 Base.best = best;
             }
+           
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return best;
-    }
-    public Path best(){
-        return best;
+        sem.release();
     }
     
+    public void joinThreads(){
+        for (MyThread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
     public ArrayList<Path> globalPopulation(){
         ArrayList<Path> population = new ArrayList<>();
         for(MyThread t : threads){
@@ -93,21 +80,5 @@ public class Advanced {
             }
         }
         return population;
-    }
-    
-    public void orderPopulation(){
-        ArrayList<Path> ordered = globalPopulation();
-        double fitness = 0.0;
-        Collections.sort(ordered,comparator);
-        
-    }
-    public static Comparator<Path> comparator = new Comparator<Path>(){
-        @Override
-        public int compare(Path path1,Path path2){
-            double fitness = path1.fitness();
-            double fitness2 = path2.fitness();
-            return (int) (fitness2-fitness);
-        }
-    };*/
     }
 }

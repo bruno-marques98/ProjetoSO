@@ -23,11 +23,13 @@ public class AlgorithmAJ {
     private final double MUTATION_RATE = 0.01; 
     private Matrix matrix;
     private int numberOfPaths;
+    private Random rand;
     
     public AlgorithmAJ(Matrix matrix, int numberOfPaths) {
         this.numberOfPaths = numberOfPaths;
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;
+        this.rand = new Random();
     }
     
     public ArrayList<Path> getPaths() {
@@ -152,7 +154,6 @@ public class AlgorithmAJ {
     }
     
     public void exchangeMutation(Path parent1,Path parent2){
-        Random rand = new Random();
         double prob = rand.nextDouble();
         int size = parent1.getPath().length;
         for(int i = 0; i < size; i++){
@@ -197,7 +198,6 @@ public class AlgorithmAJ {
                  parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
                  parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
              }
-             Random rand = new Random();
              pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
              exchangeMutation(offSpring1,offSpring2);
              topTwo.set(0, offSpring1);

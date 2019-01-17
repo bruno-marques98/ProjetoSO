@@ -14,12 +14,16 @@ import java.util.Random;
  */
 public class AlgorithmOri {
     private ArrayList<Path> paths;
-    private final double MUTATION_RATE = Math.random()*100; 
+    private final double MUTATION_RATE = 0.01; 
     private Matrix matrix;
+    private int numberOfPaths;
+    private Random rand;
     
-    public AlgorithmOri(Matrix matrix) {
+    public AlgorithmOri(Matrix matrix,int numberOfPaths) {
+        this.numberOfPaths = numberOfPaths;
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;
+        this.rand = new Random();
     }
     
     public ArrayList<Path> getPaths() {
@@ -47,102 +51,40 @@ public class AlgorithmOri {
         }
         return false;
     }
+    private void swap(int minIndex,int i){
+        Path aux = paths.get(minIndex);
+        paths.set(minIndex, paths.get(i));
+        paths.set(i,aux);
+    }
+    private void evaluate(){
+        for(int i = 0; i < paths.size()-1; i++){
+            int minIndex = i;
+            for(int j = i+1; j < paths.size(); j++){
+                if(paths.get(j).getDistance(matrix) < paths.get(minIndex).getDistance(matrix)){
+                    minIndex = j;
+                }
+            }
+            swap(minIndex,i);
+        }
+    }
     
     public ArrayList<Path> getThreeBestPaths(){
-        ArrayList<Path> auxList = new ArrayList<>(paths);
         ArrayList<Path> topThree = new ArrayList<>();
-        
-        double maxFitness = 0.0;
-        for(Path path : auxList){
-            double fit = fitness(path);
-            if(fit > maxFitness){
-                maxFitness = fit;
-                if(!topThree.isEmpty())
-                    topThree.remove(0);
-                topThree.add(path);
-            }
-        }
-        if(topThree.get(0) != null){
-            auxList.remove(topThree.get(0));
-        }
-        maxFitness = 0.0;
-        for(Path path : auxList){
-            double fit = fitness(path);
-            if(fit > maxFitness){
-                maxFitness = fit;
-                if(topThree.size() > 1)
-                    topThree.remove(1);
-                topThree.add(path);
-            }
-        }
-        if(topThree.get(0) != null){
-            auxList.remove(topThree.get(0));
-        }
-        maxFitness = 0.0;
-        for(Path path : auxList){
-            double fit = fitness(path);
-            if(fit > maxFitness){
-                maxFitness = fit;
-                if(topThree.size() > 2)
-                    topThree.remove(1);
-                topThree.add(path);
-            }
-        }
+        topThree.add(paths.get(0));
+        topThree.add(paths.get(1));
+        topThree.add(paths.get(2));
         return topThree;
     }
     
     public Path getBestPath(){
-        Path path = null;
-        double maxFitness = 0.0;
-        for(Path pa : paths){
-            double fit = fitness(pa);
-            if(fit > maxFitness){
-                path = pa;
-            }
-        }
-        return path;
+        return paths.get(0);
     }
     
     public void removeThreeWorst(ArrayList<Path> paths){
-        ArrayList<Path> bottomThree = new ArrayList<>(); 
-        double minFitness = 1.0;
-        for(Path path : paths){
-            double fit = fitness(path);
-            if(fit < minFitness){
-                minFitness = fit;
-                if(!bottomThree.isEmpty())
-                    bottomThree.remove(0);
-                bottomThree.add(path);
-            }
-        }
-        
-        paths.remove(bottomThree.get(0));
-        
-        minFitness = 1.0;
-        for(Path path : paths){
-            double fit = fitness(path);
-            if(fit < minFitness){
-                minFitness = fit;
-                if(bottomThree.size() > 1)
-                    bottomThree.remove(1);
-                bottomThree.add(path);
-            }
-        }
-        
-        paths.remove(bottomThree.get(1));
-                paths.remove(bottomThree.get(1));
-        
-        minFitness = 1.0;
-        for(Path path : paths){
-            double fit = fitness(path);
-            if(fit < minFitness){
-                minFitness = fit;
-                if(bottomThree.size() > 2)
-                    bottomThree.remove(2);
-                bottomThree.add(path);
-            }
-        }
-        paths.remove(bottomThree.get(2));
+        int index = paths.size();
+        paths.remove(index-1);
+        paths.remove(index-2);
+        paths.remove(index-3);
     }
     
     public static void pmxCrossover(Path parent1,Path parent2,Path parent3,Path offSpring1,Path offSpring2,Path offSpring3,int n,Random rand) {
@@ -206,11 +148,11 @@ public class AlgorithmOri {
         }
     }
     
-    public void exchangeMutation(Path parent1,Path parent2,double probOfMutation){
-        double prob = (Math.random()*100);
+    public void exchangeMutation(Path parent1,Path parent2){
+        double prob = rand.nextDouble();
         int size = parent1.getPath().length;
         for(int i = 0; i < size; i++){
-            if(prob < MUTATION_RATE){
+            if(prob <= MUTATION_RATE){
                 int idCity = (int) (Math.random()*size);
                 int idCity2 = (int) (Math.random()*size);
                 while(idCity2 == idCity){
@@ -241,7 +183,7 @@ public class AlgorithmOri {
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
              Path parent3 = new Path(matrix);
-             //int offSpring1[] = new int[numberOfCities];
+             
              Path offSpring1 = new Path(matrix); 
              Path offSpring2 = new Path(matrix);
              Path offSpring3 = new Path(matrix);
@@ -250,9 +192,8 @@ public class AlgorithmOri {
                  parent2.getPath()[i] = getThreeBestPaths().get(1).getPath()[i];
                  parent3.getPath()[i] = getThreeBestPaths().get(2).getPath()[i];
              }
-             Random rand = new Random();
              pmxCrossover(parent1,parent2,parent3,offSpring1,offSpring2,offSpring3,numberOfCities,rand);
-             exchangeMutation(offSpring1,offSpring2,MUTATION_RATE);
+             exchangeMutation(offSpring1,offSpring2);
              topThree.set(0, offSpring1);
              topThree.set(1, offSpring2);
              topThree.set(2, offSpring3);
@@ -266,10 +207,10 @@ public class AlgorithmOri {
              position++;
          }
 
-         System.out.println("Best path found");
+         //System.out.println("Best path found");
          Path bestPath = getBestPath();
-         System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
-         System.out.println("Fitness-> "+ fitness(bestPath));
+         //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
+         //System.out.println("Fitness-> "+ fitness(bestPath));
 
         
         
