@@ -95,7 +95,6 @@ public class Path {
 
     
     public double fitness(){
-        if(getDistance(matrix) == 0 || this == null) return 0.0;
         double fitness = 1 /(double)getDistance(matrix);
         return fitness;
     }

@@ -8,6 +8,8 @@ package projetoso;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,14 +19,12 @@ public class Base {
     private int numberOfThreads;
     private int numberOfPaths;
     private Matrix matrix;
-    private int count;
     private int time;
-    private int val;
     private double fitness;
     private AlgorithmAJ alg;
-    private Path best;
+    public static Path best= null;
     private ArrayList<MyThread> threads;
-    private Semaphore sem;
+    private static Semaphore sem = new Semaphore(1);;
 
     public Base(int numberOfThreads, Matrix matrix, int numberOfPaths, int time) {
         this.time = time;
@@ -34,8 +34,6 @@ public class Base {
         this.fitness = 1;
         this.alg = new AlgorithmAJ(matrix, numberOfPaths);
         this.threads = new ArrayList<>();
-        this.best = null;
-        this.sem = sem;
     }
 
     public void execute(){
@@ -43,11 +41,40 @@ public class Base {
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
             MyThread myT = new MyThread(matrix, numberOfPaths, time);
-            myT.startT();
+            myT.start();
+            threads.add(myT);
+        }
+        joinThreads();
+    }
+
+    public static void setBest(Path best) {
+        try {
+            sem.acquire();
+            if(Base.best == null || best.fitness() > Base.best.fitness()){
+                 Base.best = best;
+            }
+           
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        sem.release();
+    }
+    
+    public void joinThreads(){
+        for (MyThread t : threads) {
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+            /*
             if(best == null){
                  best = myT.getBestPath();
                  this.threads.add(myT); 
             }
+            if(myT.getBestPath() != null) System.out.println("not null");
+            System.out.println("Fit->"+myT.getBestPath().fitness());
             if(myT.getBestPath().fitness() >  best.fitness() ){
                 try {
                     //Get lock
@@ -57,42 +84,8 @@ public class Base {
                     this.threads.add(myT);                    
                 } catch (InterruptedException exc) {
                      System.out.println(exc); 
-                }
-            }
-            
-            //Release lock
-            sem.release();
-           
-            count++;
-
-        }
-        joinThreads();
-    }
-    public void joinThreads(){
-        for (MyThread t : threads) {
-            t.joinT();
-        }
-    }
-    public int getVal(){
-        return val;
-    }
-    public int getCount(){
-        return count;
+                }*/
     }
 
-    public Path getBest() {
-        for(MyThread t : threads){
-            double fit = t.getBestPath().fitness();
-            System.out.println("Fitness -> " + fit);
-            if(fit < fitness ){
-                fitness = fit;
-                best = t.getBestPath();
-            }
-        }
-        return best;
-    }
-    public Path best(){
-        return best;
-    }
 
 }

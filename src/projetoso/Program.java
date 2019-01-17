@@ -35,11 +35,9 @@ public class Program {
         
         Base base = new Base(numberOfThreads, matrix, numberOfPaths, time);
         base.execute();
-        System.out.println("Count: "+base.getCount());
-        System.out.println("Val: "+base.getVal());
         
-        System.out.println("Melhor caminho encontrado->"+base.best().toString());
-        System.out.println("Fitness: "+base.best().fitness());
+        System.out.println("Melhor caminho encontrado->"+Base.best.toString());
+        System.out.println("Fitness: "+Base.best.fitness());
         
     }
     

@@ -11,10 +11,9 @@ import java.util.ArrayList;
  *
  * @author bruno
  */
-public class MyThread {
+public class MyThread extends Thread{
 
     private Matrix matrix;
-    private Thread myThread;
     private AlgorithmAJ alg;
     private ArrayList<Path> population;
     private int numberOfPaths;
@@ -28,39 +27,17 @@ public class MyThread {
         this.population = new ArrayList<>();
     }
        
-    
-    public void runT() {
-        System.out.println("Did run");
-        myThread = new Thread(){
-                @Override
-                public void run(){
-                    alg.execute(matrix, 8860, time);
-                }
-            };
-        myThread.start();
+    @Override
+    public void run() {
+        alg.execute(matrix, 8860, time);
+        Base.setBest(alg.getBestPath());
     }
+    
+    
+    
+    
+    
+    
 
-    public void startT() {
-        
-        this.runT();
-        
-    }
-    public Path getBestPath(){
-        return alg.getBestPath();
-    }
-    
-    public void joinT() {
-        try {
-            this.myThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public ArrayList<Path> getPopulation(){
-        for(Path path : alg.getPaths()){
-            population.add(path);
-        }
-        return population;
-    }
-    
+
 }
