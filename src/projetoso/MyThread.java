@@ -30,7 +30,6 @@ public class MyThread extends Thread{
     @Override
     public void run() {
         alg.execute(matrix, 8860, time);
-        population = alg.getPaths();
         Base.setBest(alg.getBestPath());
         
     }
@@ -40,6 +39,9 @@ public class MyThread extends Thread{
     }
     
     public ArrayList<Path> getPopulation() {
+        for(Path p : alg.getPaths()){
+            population.add(p);
+        }
         return population;
     }
     

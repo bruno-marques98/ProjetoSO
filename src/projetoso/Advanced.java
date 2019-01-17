@@ -47,8 +47,9 @@ public class Advanced {
             MyThread myT = new MyThread(matrix, numberOfPaths, time);
             myT.start();
             threads.add(myT);
-            if(time*(1/percentage) >= System.currentTimeMillis()){
-                myT.setPopulation(newPopulation());
+            long partialTime = System.currentTimeMillis() + time *(1/percentage);
+            for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
+                 myT.setPopulation(newPopulation());
             }
             
         }
@@ -98,6 +99,7 @@ public class Advanced {
         ArrayList<Path> population = new ArrayList<>();
         for(MyThread t : threads){
             for(Path path : t.getPopulation()){
+                if(path!= null)
                 population.add(path);
             }
         }
@@ -105,10 +107,12 @@ public class Advanced {
     }
     public ArrayList<Path> newPopulation(){
         ArrayList<Path> aux = new ArrayList<>();
-        ArrayList<Path> global = globalPopulation();
+        ArrayList<Path> global = new ArrayList<>();
+        global = globalPopulation();
         order(global);
-        for(int i = 0; i < numberOfPaths; i++){
-            aux.add(global.get(i));
+        for(int i = 0; i < numberOfPaths-1; i++){
+            if(global.get(i)!= null)
+                aux.add(global.get(i));
         }
         return aux;
     }

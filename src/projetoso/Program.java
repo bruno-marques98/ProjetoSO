@@ -32,14 +32,18 @@ public class Program {
         Import imp = new Import(filePath);  
         Matrix matrix = imp.importFile();
         System.out.println(matrix.toString());
-        
+        System.out.println("A procurar o melhor caminho (versão base)");
         Base base = new Base(numberOfThreads, matrix, numberOfPaths, time);
         base.execute();
         
         System.out.println("Melhor caminho encontrado->"+Base.best.toString());
         System.out.println("Fitness: "+Base.best.fitness());
         System.out.println("Distancia: "+Base.best.getDistance(matrix));
-
+        
+        System.out.println("A procurar o melhor caminho (versão avançada)");
+        
+        Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20);
+        advanced.execute();
         
     }
     
