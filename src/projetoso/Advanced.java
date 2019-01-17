@@ -25,9 +25,10 @@ public class Advanced {
     private AlgorithmAJ alg;
     public static Path best= null;
     private ArrayList<MyThread> threads;
-    private static Semaphore sem = new Semaphore(1);;
+    private static Semaphore sem = new Semaphore(1);
+    private int percentage;
 
-    public Advanced(int numberOfThreads, Matrix matrix) {
+    public Advanced(int numberOfThreads, Matrix matrix, int numberOfPaths, int time, int percentage) {
         this.time = time;
         this.numberOfThreads = numberOfThreads;
         this.numberOfPaths = numberOfPaths;
@@ -35,6 +36,7 @@ public class Advanced {
         this.fitness = 1;
         this.alg = new AlgorithmAJ(matrix, numberOfPaths);
         this.threads = new ArrayList<>();
+        this.percentage = percentage;
     }
      
 
@@ -45,6 +47,10 @@ public class Advanced {
             MyThread myT = new MyThread(matrix, numberOfPaths, time);
             myT.start();
             threads.add(myT);
+            if(time*(1/percentage) >= System.currentTimeMillis()){
+                myT.setPopulation(newPopulation());
+            }
+            
         }
         joinThreads();
     }
@@ -72,6 +78,22 @@ public class Advanced {
         }
 
     }
+    private void swap(ArrayList<Path> paths,int minIndex,int i){
+        Path aux = paths.get(minIndex);
+        paths.set(minIndex, paths.get(i));
+        paths.set(i,aux);
+    }
+    private void order(ArrayList<Path> paths){
+        for(int i = 0; i < paths.size()-1; i++){
+            int minIndex = i;
+            for(int j = i+1; j < paths.size(); j++){
+                if(paths.get(j).getDistance(matrix) < paths.get(minIndex).getDistance(matrix)){
+                    minIndex = j;
+                }
+            }
+            swap(paths,minIndex,i);
+        }
+    }
     public ArrayList<Path> globalPopulation(){
         ArrayList<Path> population = new ArrayList<>();
         for(MyThread t : threads){
@@ -80,5 +102,14 @@ public class Advanced {
             }
         }
         return population;
+    }
+    public ArrayList<Path> newPopulation(){
+        ArrayList<Path> aux = new ArrayList<>();
+        ArrayList<Path> global = globalPopulation();
+        order(global);
+        for(int i = 0; i < numberOfPaths; i++){
+            aux.add(global.get(i));
+        }
+        return aux;
     }
 }

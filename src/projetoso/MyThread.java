@@ -35,6 +35,10 @@ public class MyThread extends Thread{
         
     }
 
+    public void setPopulation(ArrayList<Path> population) {
+        this.population = population;
+    }
+    
     public ArrayList<Path> getPopulation() {
         return population;
     }
