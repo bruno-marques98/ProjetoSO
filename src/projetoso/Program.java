@@ -38,6 +38,8 @@ public class Program {
         
         System.out.println("Melhor caminho encontrado->"+Base.best.toString());
         System.out.println("Fitness: "+Base.best.fitness());
+        System.out.println("Distancia: "+Base.best.getDistance(matrix));
+
         
     }
     

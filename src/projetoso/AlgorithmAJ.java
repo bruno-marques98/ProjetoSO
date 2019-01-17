@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AlgorithmAJ {
     private ArrayList<Path> paths;
-    private final double MUTATION_RATE = Math.random()*100; 
+    private final double MUTATION_RATE = 0.01; 
     private Matrix matrix;
     private int numberOfPaths;
     
@@ -41,7 +41,22 @@ public class AlgorithmAJ {
             paths.add(path);
         }
     }
-    
+    private void swap(int minIndex,int i){
+        Path aux = paths.get(minIndex);
+        paths.set(minIndex, paths.get(i));
+        paths.set(i,aux);
+    }
+    private void evaluate(){
+        for(int i = 0; i < paths.size()-1; i++){
+            int minIndex = i;
+            for(int j = i+1; j < paths.size(); j++){
+                if(paths.get(j).getDistance(matrix) < paths.get(minIndex).getDistance(matrix)){
+                    minIndex = j;
+                }
+            }
+            swap(minIndex,i);
+        }
+    }
     public double fitness(Path path){
         double fitness = 1 /(double)path.getDistance(matrix);
         return fitness;
@@ -56,73 +71,16 @@ public class AlgorithmAJ {
     }
     
     public ArrayList<Path> getTwoBestPaths(){
-        ArrayList<Path> auxList = new ArrayList<>(paths);
         ArrayList<Path> topTwo = new ArrayList<>();
-        
-        double maxFitness = 0.0;
-        for(Path path : auxList){
-            double fit = fitness(path);
-            if(fit > maxFitness){
-                maxFitness = fit;
-                if(!topTwo.isEmpty())
-                    topTwo.remove(0);
-                topTwo.add(path);
-            }
-        }
-        if(topTwo.get(0) != null){
-            auxList.remove(topTwo.get(0));
-        }
-        maxFitness = 0.0;
-        for(Path path : auxList){
-            double fit = fitness(path);
-            if(fit > maxFitness){
-                maxFitness = fit;
-                if(topTwo.size() > 1)
-                    topTwo.remove(1);
-                topTwo.add(path);
-            }
-        }
+        topTwo.add(paths.get(0));
+        topTwo.add(paths.get(1));
         return topTwo;
     }
     
-    public Path getBestPath(){
-        Path path = null;
-        double maxFitness = 0.0;
-        for(Path pa : paths){
-            double fit = fitness(pa);
-            if(fit > maxFitness){
-                path = pa;
-            }
-        }
-        return path;
-    }
-    
     public void removeTwoWorst(ArrayList<Path> paths){
-        ArrayList<Path> bottomTwo = new ArrayList<>(); 
-        double minFitness = 1.0;
-        for(Path path : paths){
-            double fit = fitness(path);
-            if(fit < minFitness){
-                minFitness = fit;
-                if(!bottomTwo.isEmpty())
-                    bottomTwo.remove(0);
-                bottomTwo.add(path);
-            }
-        }
-        
-        paths.remove(bottomTwo.get(0));
-        
-        minFitness = 1.0;
-        for(Path path : paths){
-            double fit = fitness(path);
-            if(fit < minFitness){
-                minFitness = fit;
-                if(bottomTwo.size() > 1)
-                    bottomTwo.remove(1);
-                bottomTwo.add(path);
-            }
-        }
-        paths.remove(bottomTwo.get(1));
+        int index = paths.size();
+        paths.remove(index-1);
+        paths.remove(index-2);
     }
     
     public static void pmxCrossover(Path parent1,Path parent2,Path offSpring1,Path offSpring2,int n,Random rand) {
@@ -193,11 +151,12 @@ public class AlgorithmAJ {
         }
     }
     
-    public void exchangeMutation(Path parent1,Path parent2,double probOfMutation){
-        double prob = (Math.random()*100);
+    public void exchangeMutation(Path parent1,Path parent2){
+        Random rand = new Random();
+        double prob = rand.nextDouble();
         int size = parent1.getPath().length;
         for(int i = 0; i < size; i++){
-            if(prob < MUTATION_RATE){
+            if(prob <= MUTATION_RATE){
                 int idCity = (int) (Math.random()*size);
                 int idCity2 = (int) (Math.random()*size);
                 while(idCity2 == idCity){
@@ -215,12 +174,16 @@ public class AlgorithmAJ {
         arr[position2] = aux;
         return arr;
     }
-    
+    public Path getBestPath(){
+        return paths.get(0);
+    }
     public void execute(Matrix matrix,int iterations,int timeSeconds){
 
         createPopulation();
         int numberOfCities = matrix.getNumberOfCities();
 
+        evaluate();
+        
         long end = System.currentTimeMillis() + timeSeconds*1000;
         //int position = 0;
          while(/*position < iterations || */System.currentTimeMillis() < end){ 
@@ -236,7 +199,7 @@ public class AlgorithmAJ {
              }
              Random rand = new Random();
              pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-             exchangeMutation(offSpring1,offSpring2,MUTATION_RATE);
+             exchangeMutation(offSpring1,offSpring2);
              topTwo.set(0, offSpring1);
              topTwo.set(1, offSpring2);
              parent1.getPath()[numberOfCities] = parent1.getPath()[0];
@@ -247,10 +210,10 @@ public class AlgorithmAJ {
              //position++;
          }
 
-         System.out.println("Best path found");
-         Path bestPath = getBestPath();
-         System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
-         System.out.println("Fitness-> "+ fitness(bestPath));
+         //System.out.println("Best path found");
+         Path bestPath = paths.get(0);
+         //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
+         //System.out.println("Fitness-> "+ fitness(bestPath));
    
     }
     
