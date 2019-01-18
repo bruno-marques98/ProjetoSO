@@ -48,9 +48,12 @@ public class Advanced {
             myT.start();
             threads.add(myT);
             long partialTime = System.currentTimeMillis() + time *(1/percentage);
-            for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
-                 myT.setPopulation(newPopulation());
+            if(System.currentTimeMillis() >= partialTime){
+                myT.setPopulation(newPopulation());
             }
+            /*for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
+                 myT.setPopulation(newPopulation());
+            }*/
             
         }
         joinThreads();
@@ -59,8 +62,8 @@ public class Advanced {
     public static void setBest(Path best) {
         try {
             sem.acquire();
-            if(Base.best == null || best.fitness() > Base.best.fitness()){
-                 Base.best = best;
+            if(Advanced.best == null || best.fitness() > Advanced.best.fitness()){
+                 Advanced.best = best;
             }
            
         } catch (InterruptedException ex) {
@@ -74,7 +77,7 @@ public class Advanced {
             try {
                 t.join();
             } catch (InterruptedException ex) {
-                Logger.getLogger(Base.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Advanced.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -98,9 +101,10 @@ public class Advanced {
     public ArrayList<Path> globalPopulation(){
         ArrayList<Path> population = new ArrayList<>();
         for(MyThread t : threads){
+            //System.err.println("entered here");
             for(Path path : t.getPopulation()){
-                if(path!= null)
-                population.add(path);
+                    //System.err.println("entered here");
+                    population.add(path);
             }
         }
         return population;
@@ -110,9 +114,10 @@ public class Advanced {
         ArrayList<Path> global = new ArrayList<>();
         global = globalPopulation();
         order(global);
-        for(int i = 0; i < numberOfPaths-1; i++){
-            if(global.get(i)!= null)
-                aux.add(global.get(i));
+        for(Path p : global){
+            if(global.size() < numberOfPaths ){
+                aux.add(p);
+            }  
         }
         return aux;
     }

@@ -31,6 +31,8 @@ public class MyThread extends Thread{
     public void run() {
         alg.execute(matrix, 8860, time);
         Base.setBest(alg.getBestPath());
+        Advanced.setBest(alg.getBestPath());
+        population = alg.getPaths();
         
     }
 
@@ -39,9 +41,6 @@ public class MyThread extends Thread{
     }
     
     public ArrayList<Path> getPopulation() {
-        for(Path p : alg.getPaths()){
-            population.add(p);
-        }
         return population;
     }
     

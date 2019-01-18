@@ -45,6 +45,10 @@ public class Program {
         Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20);
         advanced.execute();
         
+        System.out.println("Melhor caminho encontrado->"+Advanced.best.toString());
+        System.out.println("Fitness: "+Advanced.best.fitness());
+        System.out.println("Distancia: "+Advanced.best.getDistance(matrix));
+        
     }
     
 }
