@@ -44,13 +44,10 @@ public class Advanced {
         //Allow only one thread to write
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix, numberOfPaths, time);
+            MyThread myT = new MyThread(matrix, numberOfPaths, time,false,newPopulation());
             myT.start();
             threads.add(myT);
-            long partialTime = System.currentTimeMillis() + time *(1/percentage);
-            if(System.currentTimeMillis() >= partialTime){
-                myT.setPopulation(newPopulation());
-            }
+
             /*for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
                  myT.setPopulation(newPopulation());
             }*/

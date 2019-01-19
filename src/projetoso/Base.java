@@ -40,7 +40,7 @@ public class Base {
         //Allow only one thread to write
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix, numberOfPaths, time);
+            MyThread myT = new MyThread(matrix, numberOfPaths, time,true);
             myT.start();
             threads.add(myT);
         }

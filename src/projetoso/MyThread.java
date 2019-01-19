@@ -18,20 +18,38 @@ public class MyThread extends Thread{
     private ArrayList<Path> population;
     private int numberOfPaths;
     private int time;
+    private boolean isBase;
+    private ArrayList<Path> global;
     
-    public MyThread(Matrix matrix, int numberOfPaths, int time) {
+    public MyThread(Matrix matrix, int numberOfPaths, int time, boolean isBase) {
         this.time = time;
         this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.alg = new AlgorithmAJ(matrix, numberOfPaths);
         this.population = new ArrayList<>();
+        this.isBase = isBase;
+    }
+    public MyThread(Matrix matrix, int numberOfPaths, int time, boolean isBase, ArrayList<Path> global) {
+        this.time = time;
+        this.numberOfPaths = numberOfPaths;
+        this.matrix = matrix;
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
+        this.population = new ArrayList<>();
+        this.isBase = isBase;
+        this.global = global;
     }
        
     @Override
     public void run() {
-        alg.execute(matrix, 8860, time);
-        Base.setBest(alg.getBestPath());
-        Advanced.setBest(alg.getBestPath());
+        if(isBase){
+            alg.execute(matrix, time);
+            Base.setBest(alg.getBestPath());
+        }else{
+            alg.executeAdvanced(matrix, time, 10, global);
+            Advanced.setBest(alg.getBestPath());
+        }
+        
+        
         population = alg.getPaths();
         
     }
