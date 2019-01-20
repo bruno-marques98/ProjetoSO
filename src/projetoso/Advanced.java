@@ -64,7 +64,7 @@ public class Advanced {
             //long t = System.currentTimeMillis()+part;
                 public void run(){
                     //System.out.println("run timer");
-                    if(part < 0){
+                    if(part < System.currentTimeMillis()){
                         System.out.println("Set new pop");
                         myT.setPopulation(newPopulation());
                         //myT.interrupt();                        
