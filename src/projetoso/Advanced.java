@@ -8,6 +8,7 @@ package projetoso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ public class Advanced {
     private ArrayList<MyThread> threads;
     private static Semaphore sem = new Semaphore(1);
     private int percentage;
+    private ArrayList<Path> global;
 
     public Advanced(int numberOfThreads, Matrix matrix, int numberOfPaths, int time, int percentage) {
         this.time = time;
@@ -43,10 +45,27 @@ public class Advanced {
     public void execute(){
         //Allow only one thread to write
         sem = new Semaphore(1);
+        long partial = System.currentTimeMillis() + ((1/percentage)*time*1000);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix, numberOfPaths, time,false,newPopulation());
-            myT.start();
-            threads.add(myT);
+            if(System.currentTimeMillis() == partial && threads.size() != 0){
+                //System.out.println("Entered here");
+               
+                newPopulation();
+                            
+                
+            }
+            if(i == 0){
+                MyThread myT = new MyThread(matrix, numberOfPaths, time,false,global,true);
+                myT.start();
+                threads.add(myT);
+            }else{
+                MyThread myT = new MyThread(matrix, numberOfPaths, time,false,global,false);
+                myT.setPopulation(global);
+                myT.start();
+                threads.add(myT);
+            }
+           
+           
 
             /*for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
                  myT.setPopulation(newPopulation());
@@ -98,24 +117,22 @@ public class Advanced {
     public ArrayList<Path> globalPopulation(){
         ArrayList<Path> population = new ArrayList<>();
         for(MyThread t : threads){
-            //System.err.println("entered here");
-            for(Path path : t.getPopulation()){
-                    //System.err.println("entered here");
-                    population.add(path);
-            }
+            if(t.getPopulation()!= null){
+                Iterator<Path> it = t.getPopulation().iterator();
+                while(it.hasNext()){
+                    population.add(it.next());
+                }
+            }            
         }
         return population;
     }
-    public ArrayList<Path> newPopulation(){
+    public void newPopulation(){
         ArrayList<Path> aux = new ArrayList<>();
-        ArrayList<Path> global = new ArrayList<>();
-        global = globalPopulation();
-        order(global);
-        for(Path p : global){
-            if(global.size() < numberOfPaths ){
-                aux.add(p);
-            }  
+        aux = globalPopulation();
+        order(aux);
+        Iterator<Path> it = aux.iterator();
+        while(it.hasNext() && global.size() < numberOfPaths-1){
+            global.add(it.next());
         }
-        return aux;
     }
 }

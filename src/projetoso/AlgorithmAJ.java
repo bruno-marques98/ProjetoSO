@@ -182,11 +182,11 @@ public class AlgorithmAJ {
 
         createPopulation();
         int numberOfCities = matrix.getNumberOfCities();
-
+        ArrayList<Path> topTwo = new ArrayList<>();
         evaluate();
         long end = System.currentTimeMillis() + timeSeconds*1000;
          while(/*position < iterations || */System.currentTimeMillis() < end){ 
-             ArrayList<Path> topTwo = getTwoBestPaths();
+             topTwo = getTwoBestPaths();
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
              //int offSpring1[] = new int[numberOfCities];
@@ -209,51 +209,14 @@ public class AlgorithmAJ {
          }
 
          //System.out.println("Best path found");
-         Path bestPath = paths.get(0);
          //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
          //System.out.println("Fitness-> "+ fitness(bestPath));
    
     }
-        public void executeAdvanced(Matrix matrix,int timeSeconds, int percentage, ArrayList<Path> population){
 
-        createPopulation();
-        int numberOfCities = matrix.getNumberOfCities();
-
-        evaluate();
-        long partial = System.currentTimeMillis() + (timeSeconds+(1/percentage)*timeSeconds)*100;
-        long end = System.currentTimeMillis() + timeSeconds*1000;
-        //int position = 0;
-         while(/*position < iterations || */System.currentTimeMillis() < end){ 
-            if(System.currentTimeMillis() >= partial){
-                paths = population;
-            }
-             ArrayList<Path> topTwo = getTwoBestPaths();
-             Path parent1 = new Path(matrix);
-             Path parent2 = new Path(matrix);
-             //int offSpring1[] = new int[numberOfCities];
-             Path offSpring1 = new Path(matrix); 
-             Path offSpring2 = new Path(matrix);
-             for(int i = 0; i < numberOfCities; i++){
-                 parent1.getPath()[i] = getTwoBestPaths().get(0).getPath()[i];
-                 parent2.getPath()[i] = getTwoBestPaths().get(1).getPath()[i];
-             }
-             pmxCrossover(parent1,parent2,offSpring1,offSpring2,numberOfCities,rand);
-             exchangeMutation(offSpring1,offSpring2);
-             topTwo.set(0, offSpring1);
-             topTwo.set(1, offSpring2);
-             parent1.getPath()[numberOfCities] = parent1.getPath()[0];
-             parent2.getPath()[numberOfCities] = parent2.getPath()[0];
-             removeTwoWorst(paths);
-             paths.add(parent1);
-             paths.add(parent2);
-             //position++;
-         }
-
-         //System.out.println("Best path found");
-         Path bestPath = paths.get(0);
-         //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
-         //System.out.println("Fitness-> "+ fitness(bestPath));
-   
+    public void setPaths(ArrayList<Path> paths) {
+        this.paths = paths;
     }
+
     
 }
