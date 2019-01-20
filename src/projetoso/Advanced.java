@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,31 +47,24 @@ public class Advanced {
     public void execute(){
         //Allow only one thread to write
         sem = new Semaphore(1);
-        long partial = System.currentTimeMillis() + ((1/percentage)*time*1000);
+        final Timer timer = new Timer();
         for(int i = 0; i < numberOfThreads; i++){
-            if(System.currentTimeMillis() == partial && threads.size() != 0){
-                //System.out.println("Entered here");
-               
-                newPopulation();
-                            
-                
-            }
-            if(i == 0){
-                MyThread myT = new MyThread(matrix, numberOfPaths, time,false,global,true);
-                myT.start();
-                threads.add(myT);
-            }else{
-                MyThread myT = new MyThread(matrix, numberOfPaths, time,false,global,false);
-                myT.setPopulation(global);
-                myT.start();
-                threads.add(myT);
-            }
-           
-           
-
-            /*for(int j =(int) System.currentTimeMillis() ; i < partialTime; j = (int) System.currentTimeMillis()){
-                 myT.setPopulation(newPopulation());
-            }*/
+            MyThread myT = new MyThread(matrix, numberOfPaths, time,false);
+            myT.start();
+            threads.add(myT); 
+            timer.scheduleAtFixedRate(new TimerTask(){
+            int i = (time)*(percentage/100);
+                public void run(){
+                    //System.out.println("run timer");
+                    if(i<0){
+                        timer.cancel();
+                        myT.interrupt();
+                        System.out.println("Set new pop");
+                        myT.setPopulation(newPopulation());
+                        myT.start();
+                    }
+                }
+            },0,time);
             
         }
         joinThreads();
@@ -126,7 +121,7 @@ public class Advanced {
         }
         return population;
     }
-    public void newPopulation(){
+    public ArrayList<Path> newPopulation(){
         ArrayList<Path> aux = new ArrayList<>();
         aux = globalPopulation();
         order(aux);
@@ -134,5 +129,6 @@ public class Advanced {
         while(it.hasNext() && global.size() < numberOfPaths-1){
             global.add(it.next());
         }
+        return global;
     }
 }

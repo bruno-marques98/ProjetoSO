@@ -30,16 +30,7 @@ public class MyThread extends Thread{
         this.population = new ArrayList<>();
         this.isBase = isBase;
     }    
-    public MyThread(Matrix matrix, int numberOfPaths, int time, boolean isBase, ArrayList<Path> global,boolean isFirst) {
-        this.time = time;
-        this.numberOfPaths = numberOfPaths;
-        this.matrix = matrix;
-        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
-        this.population = new ArrayList<>();
-        this.isBase = isBase;
-        this.global = global;
-        this.isFirst = isFirst;
-    }
+
        
     @Override
     public void run() {
@@ -47,25 +38,15 @@ public class MyThread extends Thread{
         if(isBase){
             alg.execute(matrix, time);
             Base.setBest(alg.getBestPath());
-        }else{
-            
-            if(isFirst){
-                alg.execute(matrix, time);
-            }else{
-                alg.execute(matrix, time);
-            }
-            
+        }else{    
+            alg.execute(matrix, time);
             Advanced.setBest(alg.getBestPath());
-        }
-        
-        
-        
-        
+        }          
     }
 
     public void setPopulation(ArrayList<Path> population) {
         this.population = population;
-        //alg.setPaths(global);
+        alg.setPaths(global);
     }
     
     public ArrayList<Path> getPopulation() {
