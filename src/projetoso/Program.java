@@ -48,7 +48,9 @@ public class Program {
         System.out.println("A procurar o melhor caminho (versão avançada)");
         
         long beginA = System.currentTimeMillis();
+        
         Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20, mutation_rate);
+
         advanced.execute();
         
         System.out.println("Melhor caminho encontrado->"+Advanced.best.toString());

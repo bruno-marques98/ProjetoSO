@@ -43,33 +43,42 @@ public class Advanced {
         this.alg = new AlgorithmAJ(matrix, numberOfPaths, mutation_rate);
         this.threads = new ArrayList<>();
         this.percentage = percentage;
+        this.global = new ArrayList<>();
+    }
+
+    public void setGlobal(ArrayList<Path> global) {
+        this.global = global;
     }
      
 
     public void execute(){
         //Allow only one thread to write
         sem = new Semaphore(1);
+        int i;
         final Timer timer = new Timer();
-        for(int i = 0; i < numberOfThreads; i++){
+        for( i = 0; i < numberOfThreads; i++){
             MyThread myT = new MyThread(matrix, numberOfPaths, time,false, MUTATION_RATE);
             myT.start();
+            setGlobal(myT.getPopulation());
             threads.add(myT); 
+            long part = System.currentTimeMillis() + percentage/100*time;
             timer.scheduleAtFixedRate(new TimerTask(){
-            int i = (time)*(percentage/100);
+            //long t = System.currentTimeMillis()+part;
                 public void run(){
                     //System.out.println("run timer");
-                    if(i<0){
-                        timer.cancel();
-                        myT.interrupt();
+                    if(part < System.currentTimeMillis()){
                         System.out.println("Set new pop");
                         myT.setPopulation(newPopulation());
-                        myT.start();
+                        //myT.interrupt();                        
+                        //myT.start();
                     }
                 }
-            },0,time);
+            },0,1000);
             
         }
+        
         joinThreads();
+        timer.cancel();
     }
 
     public static void setBest(Path best) {
