@@ -14,7 +14,13 @@ import java.util.ArrayList;
 public class MyThread extends Thread{
 
     private Matrix matrix;
+    
+    //VERSÃO A-JE++
     private AlgorithmAJ alg;
+    
+    //VERSÃO ORIGINAL
+    //private AlgorithmOri alg;
+    
     private ArrayList<Path> population;
     private int numberOfPaths;
     private int time;
@@ -22,11 +28,16 @@ public class MyThread extends Thread{
     private ArrayList<Path> global;
     private boolean isFirst;
     
-    public MyThread(Matrix matrix, int numberOfPaths, int time, boolean isBase) {
+    public MyThread(Matrix matrix, int numberOfPaths, int time, boolean isBase, double mutation_rate) {
         this.time = time;
         this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
-        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
+        //VERSÃO A-JE++
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths, mutation_rate);
+        
+        //VERSÃO ORIGINAL
+        //this.alg = new AlgorithmOri(matrix, numberOfPaths, mutation_rate);
+        
         this.population = new ArrayList<>();
         this.isBase = isBase;
     }    

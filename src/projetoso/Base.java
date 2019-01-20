@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Base {
     private int numberOfThreads;
     private int numberOfPaths;
+    private double MUTATION_RATE;
     private Matrix matrix;
     private int time;
     private double fitness;
@@ -26,13 +27,14 @@ public class Base {
     private ArrayList<MyThread> threads;
     private static Semaphore sem = new Semaphore(1);;
 
-    public Base(int numberOfThreads, Matrix matrix, int numberOfPaths, int time) {
+    public Base(int numberOfThreads, Matrix matrix, int numberOfPaths, int time, double mutation_rate) {
         this.time = time;
         this.numberOfThreads = numberOfThreads;
+        this.MUTATION_RATE = mutation_rate;
         this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.fitness = 1;
-        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths, mutation_rate);
         this.threads = new ArrayList<>();
     }
 
@@ -40,7 +42,7 @@ public class Base {
         //Allow only one thread to write
         sem = new Semaphore(1);
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix, numberOfPaths, time,true);
+            MyThread myT = new MyThread(matrix, numberOfPaths, time,true, MUTATION_RATE);
             myT.start();
             threads.add(myT);
         }

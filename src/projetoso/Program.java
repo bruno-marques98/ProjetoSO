@@ -28,13 +28,14 @@ public class Program {
         int numberOfThreads = Integer.parseInt(commands[1]);
         int time = Integer.parseInt(commands[2]);
         int numberOfPaths = Integer.parseInt(commands[3]);
+        double mutation_rate = Float.parseFloat(commands[4]);
         
         Import imp = new Import(filePath);  
         Matrix matrix = imp.importFile();
         System.out.println(matrix.toString());
         System.out.println("A procurar o melhor caminho (versão base)");
         long beginB = System.currentTimeMillis();
-        Base base = new Base(numberOfThreads, matrix, numberOfPaths, time);
+        Base base = new Base(numberOfThreads, matrix, numberOfPaths, time, mutation_rate);
         base.execute();
         
         System.out.println("Melhor caminho encontrado->"+Base.best.toString());
@@ -47,7 +48,7 @@ public class Program {
         System.out.println("A procurar o melhor caminho (versão avançada)");
         
         long beginA = System.currentTimeMillis();
-        Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20);
+        Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20, mutation_rate);
         advanced.execute();
         
         System.out.println("Melhor caminho encontrado->"+Advanced.best.toString());

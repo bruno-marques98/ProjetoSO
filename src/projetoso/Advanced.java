@@ -20,6 +20,7 @@ import java.util.logging.Logger;
  * @author bruno
  */
 public class Advanced {
+    private double MUTATION_RATE;
     private int numberOfThreads;
     private int numberOfPaths;
     private Matrix matrix;
@@ -32,13 +33,14 @@ public class Advanced {
     private int percentage;
     private ArrayList<Path> global;
 
-    public Advanced(int numberOfThreads, Matrix matrix, int numberOfPaths, int time, int percentage) {
+    public Advanced(int numberOfThreads, Matrix matrix, int numberOfPaths, int time, int percentage, double mutation_rate) {
         this.time = time;
+        this.MUTATION_RATE = mutation_rate;
         this.numberOfThreads = numberOfThreads;
         this.numberOfPaths = numberOfPaths;
         this.matrix = matrix;
         this.fitness = 1;
-        this.alg = new AlgorithmAJ(matrix, numberOfPaths);
+        this.alg = new AlgorithmAJ(matrix, numberOfPaths, mutation_rate);
         this.threads = new ArrayList<>();
         this.percentage = percentage;
     }
@@ -49,7 +51,7 @@ public class Advanced {
         sem = new Semaphore(1);
         final Timer timer = new Timer();
         for(int i = 0; i < numberOfThreads; i++){
-            MyThread myT = new MyThread(matrix, numberOfPaths, time,false);
+            MyThread myT = new MyThread(matrix, numberOfPaths, time,false, MUTATION_RATE);
             myT.start();
             threads.add(myT); 
             timer.scheduleAtFixedRate(new TimerTask(){

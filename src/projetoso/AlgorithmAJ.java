@@ -20,13 +20,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class AlgorithmAJ {
     private ArrayList<Path> paths;
-    private final double MUTATION_RATE = 0.01; 
+    private final double MUTATION_RATE; 
     private Matrix matrix;
     private int numberOfPaths;
     private Random rand;
     private int iterations;
     
-    public AlgorithmAJ(Matrix matrix, int numberOfPaths) {
+    public AlgorithmAJ(Matrix matrix, int numberOfPaths, double MUTATION_RATE) {
+        this.MUTATION_RATE = MUTATION_RATE;
         this.numberOfPaths = numberOfPaths;
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;

@@ -14,12 +14,14 @@ import java.util.Random;
  */
 public class AlgorithmOri {
     private ArrayList<Path> paths;
-    private final double MUTATION_RATE = 0.01; 
+    private final double MUTATION_RATE;
     private Matrix matrix;
     private int numberOfPaths;
     private Random rand;
+    private int iterations;
     
-    public AlgorithmOri(Matrix matrix,int numberOfPaths) {
+    public AlgorithmOri(Matrix matrix,int numberOfPaths, double mutation_rate) {
+        this.MUTATION_RATE = mutation_rate;
         this.numberOfPaths = numberOfPaths;
         paths = new ArrayList<>();
         if(matrix != null) this.matrix = matrix;
@@ -171,14 +173,13 @@ public class AlgorithmOri {
         return arr;
     }
     
-    public void execute(Matrix matrix,int iterations,int timeSeconds){
+    public void execute(Matrix matrix,int timeSeconds){
 
         createPopulation();
         int numberOfCities = matrix.getNumberOfCities();
 
         long end = System.currentTimeMillis() + timeSeconds*1000;
-        int position = 0;
-         while(position < iterations || System.currentTimeMillis() < end){ 
+         while(System.currentTimeMillis() < end){ 
              ArrayList<Path> topThree = getThreeBestPaths();
              Path parent1 = new Path(matrix);
              Path parent2 = new Path(matrix);
@@ -204,15 +205,20 @@ public class AlgorithmOri {
              paths.add(parent1);
              paths.add(parent2);
              paths.add(parent3);
-             position++;
+             
+             iterations++;
          }
-
-         //System.out.println("Best path found");
-         Path bestPath = getBestPath();
+         
+         Path bestPath = paths.get(0);
+         System.out.println("Best path found: " + getBestPath().toString()+" Distancia: " + bestPath.getDistance(matrix)+" Iterations: " + iterations + "\n");
          //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
          //System.out.println("Fitness-> "+ fitness(bestPath));
 
         
         
+    }
+    
+    public void setPaths(ArrayList<Path> paths) {
+        this.paths = paths;
     }
 }
