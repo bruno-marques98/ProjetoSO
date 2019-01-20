@@ -24,6 +24,7 @@ public class AlgorithmAJ {
     private Matrix matrix;
     private int numberOfPaths;
     private Random rand;
+    private int iterations;
     
     public AlgorithmAJ(Matrix matrix, int numberOfPaths) {
         this.numberOfPaths = numberOfPaths;
@@ -205,11 +206,11 @@ public class AlgorithmAJ {
              removeTwoWorst(paths);
              paths.add(parent1);
              paths.add(parent2);
-             //position++;
+             iterations++;
          }
-
-         //System.out.println("Best path found");
-         //System.out.println(bestPath.toString()+"Distancia: " + bestPath.getDistance(matrix));
+         Path bestPath = paths.get(0);
+         System.out.println("Best path found: " + getBestPath().toString()+" Distancia: " + bestPath.getDistance(matrix)+" Iterations: " + iterations + "\n");
+         //System.out.println();
          //System.out.println("Fitness-> "+ fitness(bestPath));
    
     }

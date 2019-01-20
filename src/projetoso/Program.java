@@ -33,6 +33,7 @@ public class Program {
         Matrix matrix = imp.importFile();
         System.out.println(matrix.toString());
         System.out.println("A procurar o melhor caminho (versão base)");
+        long beginB = System.currentTimeMillis();
         Base base = new Base(numberOfThreads, matrix, numberOfPaths, time);
         base.execute();
         
@@ -40,14 +41,21 @@ public class Program {
         System.out.println("Fitness: "+Base.best.fitness());
         System.out.println("Distancia: "+Base.best.getDistance(matrix));
         
+        long endB = System.currentTimeMillis() - beginB;
+        System.out.println("Tempo total BASE: " + endB);
+        
         System.out.println("A procurar o melhor caminho (versão avançada)");
         
+        long beginA = System.currentTimeMillis();
         Advanced advanced = new Advanced(numberOfThreads, matrix, numberOfPaths, time,20);
         advanced.execute();
         
         System.out.println("Melhor caminho encontrado->"+Advanced.best.toString());
         System.out.println("Fitness: "+Advanced.best.fitness());
         System.out.println("Distancia: "+Advanced.best.getDistance(matrix));
+        
+        long endA = System.currentTimeMillis() - beginA;
+        System.out.println("Tempo total AVANÇADA: " + endA);
         
     }
     
